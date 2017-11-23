@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    id="cordova-plugin-modalwebview"
+    version="1.0.0">
+    <name>ModalWebView</name>
+    <description>Cordova modal WebView plugin</description>
+    <license>Apache 2.0</license>
+    <keywords>cordova,modal,webview</keywords>
+    <repo>https://github.com/takeyoda/cordova-plugin-modalwebview.git</repo>
+    <issue>https://github.com/takeyoda/cordova-plugin-modalwebview/issues</issue>
+
+    <engines>
+        <engine name="cordova-android" version=">=6.3.0" />
+    </engines>
+
+    <js-module src="www/ModalWebView.js" name="ModalWebView">
+        <clobbers target="ModalWebView" />
+    </js-module>
+
+    <platform name="android">
+        <config-file target="res/xml/config.xml" parent="/*">
+            <feature name="ModalWebView">
+                <param name="android-package" value="ore.cordova.modalwebview.ModalWebView" />
+            </feature>
+        </config-file>
+        <config-file target="AndroidManifest.xml" parent="/*">
+            <uses-permission android:name="android.permission.INTERNET" />
+        </config-file>
+        <config-file target="AndroidManifest.xml" parent="/manifest/application">
+            <activity android:name="ore.cordova.modalwebview.WebViewActivity"
+                      android:exported="false"
+                      android:theme="@android:style/Theme.DeviceDefault"
+                      android:windowContentOverlay="@null" />
+        </config-file>
+        <source-file src="src/android/ModalWebView.java" target-dir="src/ore/cordova/modalwebview" />
+        <source-file src="src/android/ResourceUtils.java" target-dir="src/ore/cordova/modalwebview" />
+        <source-file src="src/android/WebViewActivity.java" target-dir="src/ore/cordova/modalwebview" />
+        <source-file src="src/android/xml/bottom_to_top.xml" target-dir="res/anim" />
+        <source-file src="src/android/xml/top_to_bottom.xml" target-dir="res/anim" />
+    </platform>
+
+    <platform name="ios">
+        <config-file target="config.xml" parent="/*">
+            <feature name="ModalWebView">
+                <param name="ios-package" value="OREModalWebView" />
+            </feature>
+        </config-file>
+        <header-file src="src/ios/OREModalWebView.h" />
+        <source-file src="src/ios/OREModalWebView.m" />
+        <header-file src="src/ios/OREWebViewController.h" />
+        <source-file src="src/ios/OREWebViewController.m" />
+        <!-- framework src="WebKit.framework" / -->
+    </platform>
+
+    <platform name="browser">
+        <config-file target="config.xml" parent="/*">
+            <feature name="ModalWebView">
+                <param name="browser-package" value="ModalWebView" />
+            </feature>
+        </config-file>
+
+        <js-module src="src/browser/ModalWebViewProxy.js" name="ModalWebViewProxy">
+            <runs />
+        </js-module>
+    </platform>
+</plugin>
