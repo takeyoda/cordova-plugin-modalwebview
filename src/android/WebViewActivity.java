@@ -1,17 +1,22 @@
 package ore.cordova.modalwebview;
 
 import android.animation.ObjectAnimator;
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.ClipDrawable;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.RectShape;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
+import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.Window;
+import android.view.View;
+import android.view.ViewGroup;
 import android.webkit.WebChromeClient;
+import android.webkit.WebResourceError;
+import android.webkit.WebResourceRequest;
+import android.webkit.WebResourceResponse;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.FrameLayout;
@@ -22,13 +27,18 @@ import android.view.Gravity;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 
-public class WebViewActivity extends Activity {
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
-  private static final String EXTRA_URL = WebView.class.getName() + "#URL";
+public class WebViewActivity extends AppCompatActivity {
 
-  public static Intent newCallingIntent(Context context, String url) {
+  private static final String EXTRA_URL = WebViewActivity.class.getName() + "#URL";
+  private static final String EXTRA_TITLE = WebViewActivity.class.getName() + "#TITLE";
+
+  public static Intent newCallingIntent(Context context, String url, String title) {
     return new Intent(context, WebViewActivity.class)
-        .putExtra(EXTRA_URL, url);
+        .putExtra(EXTRA_URL, url)
+        .putExtra(EXTRA_TITLE, title);
   }
 
   @Override
@@ -52,7 +62,7 @@ public class WebViewActivity extends Activity {
     fgs.resize(1, 1);
     fg.setShape(fgs);
     fg.getPaint().setColor(0xFF00AAFF);
-    final ClipDrawable fgc = new ClipDrawable(fg, Gravity.LEFT, ClipDrawable.HORIZONTAL);
+    final ClipDrawable fgc = new ClipDrawable(fg, Gravity.START, ClipDrawable.HORIZONTAL);
     final LayerDrawable d = new LayerDrawable(new Drawable[]{bg, fgc});
     d.setId(0, android.R.id.background);
     d.setId(1, android.R.id.progress);
@@ -66,14 +76,16 @@ public class WebViewActivity extends Activity {
     final LinearLayout.LayoutParams wlp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
     container.addView(webView, wlp);
     webView.getSettings().setJavaScriptEnabled(true);
-    webView.setWebViewClient(new WebViewClient());
+    webView.setWebViewClient(new MWVWebViewClient(this, container));
     webView.setWebChromeClient(new WebChromeClient() {
       @Override
       public void onProgressChanged(WebView view, int newProgress) {
         progressBar.setAlpha(1);
         progressBar.setProgress(newProgress);
         if (newProgress >= 100) {
-          ObjectAnimator.ofFloat(progressBar, "alpha", 1, 0).setDuration(500).start();
+          ObjectAnimator anim = ObjectAnimator.ofFloat(progressBar, "alpha", 1, 0).setDuration(500);
+          anim.setStartDelay(180);
+          anim.start();
         }
       }
     });
@@ -84,6 +96,8 @@ public class WebViewActivity extends Activity {
     progressBar.setProgress(0);
 
     String url = getIntent().getStringExtra(EXTRA_URL);
+    String title = getIntent().getStringExtra(EXTRA_TITLE);
+    setTitle(title);
     webView.loadUrl(url);
   }
 
@@ -97,7 +111,8 @@ public class WebViewActivity extends Activity {
   @Override
   public boolean onCreateOptionsMenu(Menu menu) {
     final MenuItem close = menu.add("Close");
-    close.setIcon(android.R.drawable.ic_delete)
+    final int iconClose = ResourceUtils.getDrawableResourceIdentifier(this, "ic_close_white_48dp");
+    close.setIcon(iconClose)
         .setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
           @Override
           public boolean onMenuItemClick(MenuItem menuItem) {
@@ -107,5 +122,61 @@ public class WebViewActivity extends Activity {
         })
         .setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
     return super.onCreateOptionsMenu(menu);
+  }
+
+  private static class MWVWebViewClient extends WebViewClient {
+    private final Context context;
+    private final ViewGroup containerView;
+
+    MWVWebViewClient(Context context, ViewGroup containerView) {
+      this.context = context;
+      this.containerView = containerView;
+    }
+
+    @Override
+    public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
+      handleError(view);
+    }
+
+    @Override
+    public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
+      if (!isForMainFrame(request)) {
+        return;
+      }
+      handleError(view);
+    }
+
+    @Override
+    public void onReceivedHttpError(WebView view, WebResourceRequest request, WebResourceResponse errorResponse) {
+      if (!isForMainFrame(request)) {
+        return;
+      }
+      handleError(view);
+    }
+
+    private void handleError(final WebView webView) {
+      final int messageId = ResourceUtils.getStringResourceIdentifier(context, "modalwebview_error");
+      final int actionId = ResourceUtils.getStringResourceIdentifier(context, "modalwebview_action_reload");
+      Snackbar.make(containerView, messageId, Snackbar.LENGTH_LONG)
+          .setAction(actionId, new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+              webView.reload();
+            }
+          }).show();
+    }
+
+    private static boolean isForMainFrame(WebResourceRequest request) {
+      try {
+        Method m = WebResourceRequest.class.getMethod("isForMainFrame");
+        return (Boolean)m.invoke(request);
+      } catch (NoSuchMethodException e) {
+        return false;
+      } catch (InvocationTargetException e) {
+        return false;
+      } catch (IllegalAccessException e) {
+        return false;
+      }
+    }
   }
 }

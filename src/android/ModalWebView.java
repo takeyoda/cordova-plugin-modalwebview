@@ -17,7 +17,8 @@ public class ModalWebView extends CordovaPlugin {
   public boolean execute(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
     if (action.equals("presentModalWebView")) {
       String url = args.getString(0);
-      presentModalWebView(url);
+      String title = args.getString(1);
+      presentModalWebView(url, title);
 
       PluginResult r = new PluginResult(PluginResult.Status.NO_RESULT);
       r.setKeepCallback(true);
@@ -28,10 +29,10 @@ public class ModalWebView extends CordovaPlugin {
     return false;
   }
 
-  private void presentModalWebView(String url) {
+  private void presentModalWebView(String url, String title) {
     Activity context = cordova.getActivity();
-    Intent intent = WebViewActivity.newCallingIntent(context, url);
-    context.startActivityForResult(intent, 0);
+    Intent intent = WebViewActivity.newCallingIntent(context, url, title);
+    context.startActivity(intent);
     int enterAnimationId = ResourceUtils.getAnimationResourceIdentifier(context, "bottom_to_top");
     context.overridePendingTransition(enterAnimationId, android.R.anim.fade_out);
   }

@@ -19,6 +19,6 @@ var button = document.getElementById('some_element');
 button.addEventListener('click', function() {
   var success = function() {};
   var error = function(msg) {};
-  ModalWebView.presentModalWebView(success, error, 'https://www.example.com/');
+  ModalWebView.presentModalWebView(success, error, 'https://www.example.com/', 'WebView title');
 });
 ```

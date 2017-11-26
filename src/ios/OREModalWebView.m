@@ -8,9 +8,11 @@
 @implementation OREModalWebView
 - (void)presentModalWebView:(CDVInvokedUrlCommand*)command {
   NSString* strURL = [[command arguments] objectAtIndex:0];
+  NSString* title = [[command arguments] objectAtIndex:1];
   NSURL *url = [NSURL URLWithString:strURL];
   OREModalWebViewController *rootController = [[OREModalWebViewController alloc] init];
   rootController.delegate = self;
+  rootController.title = title;
   self.modalController = rootController;
   UINavigationController *naviController = [[UINavigationController alloc] initWithRootViewController:rootController];
   

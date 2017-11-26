@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="modalwebview_error">通信中に問題が発生しました</string>
+    <string name="modalwebview_action_reload">再接続</string>
+</resources>

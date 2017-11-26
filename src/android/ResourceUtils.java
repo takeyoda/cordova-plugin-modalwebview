@@ -10,4 +10,10 @@ final class ResourceUtils {
   static int getAnimationResourceIdentifier(Context context, String name) {
     return getResourceIdentifier(context, name, "anim");
   }
+  static int getDrawableResourceIdentifier(Context context, String name) {
+    return getResourceIdentifier(context, name, "drawable");
+  }
+  static int getStringResourceIdentifier(Context context, String name) {
+    return getResourceIdentifier(context, name, "string");
+  }
 }
