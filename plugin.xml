@@ -54,18 +54,9 @@
         <source-file src="src/ios/OREModalWebView.m" />
         <header-file src="src/ios/OREWebViewController.h" />
         <source-file src="src/ios/OREWebViewController.m" />
+        <header-file src="src/ios/ORESnackBar.h" />
+        <source-file src="src/ios/ORESnackBar.m" />
+        <resource-file src="src/ios/ORESnackBar.xib" />
         <!-- framework src="WebKit.framework" / -->
-    </platform>
-
-    <platform name="browser">
-        <config-file target="config.xml" parent="/*">
-            <feature name="ModalWebView">
-                <param name="browser-package" value="ModalWebView" />
-            </feature>
-        </config-file>
-
-        <js-module src="src/browser/ModalWebViewProxy.js" name="ModalWebViewProxy">
-            <runs />
-        </js-module>
     </platform>
 </plugin>

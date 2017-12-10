@@ -2,5 +2,8 @@
 #import <Cordova/CDVPlugin.h>
 
 @interface OREModalWebView : CDVPlugin
-- (void)presentModalWebView:(CDVInvokedUrlCommand*)command;
+- (void)init:(CDVInvokedUrlCommand *)command; // TODO method name
+- (void)open:(CDVInvokedUrlCommand *)command;
+- (void)setErrorTextColor:(CDVInvokedUrlCommand *)command;
+- (void)setErrorBackgroundColor:(CDVInvokedUrlCommand *)command;
 @end

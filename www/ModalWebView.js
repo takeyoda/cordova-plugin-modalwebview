@@ -1,7 +1,37 @@
 var exec = require('cordova/exec');
 
-module.exports = {
-  presentModalWebView: function (successCallback, errorCallback, url, title) {
-    exec(successCallback, errorCallback, 'ModalWebView', 'presentModalWebView', [url, title]);
+function ModalWebView (onCloseCallback) {
+  var successCallback = function () {
+    if (typeof onCloseCallback === 'function') {
+      onCloseCallback();
+    }
+  };
+  var errorCallback = function (msg) {
+    console.log('error: ' + msg);
+    successCallback();
+  };
+  setTimeout(function () {
+    exec(successCallback, errorCallback, 'ModalWebView', 'init', []);
+  }, 10);
+}
+
+ModalWebView.prototype = {
+  constructor: ModalWebView,
+  open: function (url, title) {
+    var successCallback = function () {};
+    var errorCallback = function (msg) {};
+    exec(successCallback, errorCallback, 'ModalWebView', 'open', [url, title]);
+  },
+  setErrorTextColor: function (color) { // 0xRRGGBB: number, NOT hex string
+    var successCallback = function () {};
+    var errorCallback = function (msg) {};
+    exec(successCallback, errorCallback, 'ModalWebView', 'setErrorTextColor', [color]);
+  },
+  setErrorBackgroundColor: function (color) {
+    var successCallback = function () {};
+    var errorCallback = function (msg) {};
+    exec(successCallback, errorCallback, 'ModalWebView', 'setErrorBackgroundColor', [color]);
   }
 };
+
+module.exports = ModalWebView;

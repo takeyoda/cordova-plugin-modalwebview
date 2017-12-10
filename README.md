@@ -15,10 +15,13 @@ This requires cordova 5.0+
 ## Usage
 
 ```js
+var modal = new ModalWebView(function () {
+  console.log('modal closed');
+});
+modal.setErrorTextColor(0xFFFFFF);
+modal.setErrorBackgroundColor(0xEE0044);
 var button = document.getElementById('some_element');
 button.addEventListener('click', function() {
-  var success = function() {};
-  var error = function(msg) {};
-  ModalWebView.presentModalWebView(success, error, 'https://www.example.com/', 'WebView title');
+  modal.open('https://www.example.com/', 'WebView title');
 });
 ```

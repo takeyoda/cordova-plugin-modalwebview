@@ -7,8 +7,7 @@
     "id": "cordova-plugin-modalwebview",
     "platforms": [
       "android",
-      "ios",
-      "browser"
+      "ios"
     ]
   },
   "repository": {
@@ -23,12 +22,11 @@
     "modal",
     "ecosystem:cordova",
     "cordova-android",
-    "cordova-ios",
-    "cordova-browser"
+    "cordova-ios"
   ],
   "scripts": {
     "test": "npm run eslint",
-    "eslint": "node node_modules/eslint/bin/eslint www && node node_modules/eslint/bin/eslint src"
+    "eslint": "node node_modules/eslint/bin/eslint www"
   },
   "author": "ore",
   "license": "Apache-2.0",
