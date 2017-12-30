@@ -3,10 +3,12 @@ package ore.cordova.modalwebview;
 import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.drawable.ClipDrawable;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.RectShape;
 import android.os.Bundle;
+import android.support.annotation.ColorInt;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
@@ -26,6 +28,7 @@ import android.graphics.drawable.LayerDrawable;
 import android.view.Gravity;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -34,11 +37,16 @@ public class WebViewActivity extends AppCompatActivity {
 
   private static final String EXTRA_URL = WebViewActivity.class.getName() + "#URL";
   private static final String EXTRA_TITLE = WebViewActivity.class.getName() + "#TITLE";
+  private static final String EXTRA_ERROR_TEXT_COLOR = WebViewActivity.class.getName() + "#ERROR_TEXT_COLOR";
+  private static final String EXTRA_ERROR_BACKGROUND_COLOR = WebViewActivity.class.getName() + "#ERROR_BACKGROUND_COLOR";
 
-  public static Intent newCallingIntent(Context context, String url, String title) {
+  public static Intent newCallingIntent(Context context, String url, String title,
+                                        @ColorInt int errorTextColor, @ColorInt int errorBackgroundColor) {
     return new Intent(context, WebViewActivity.class)
         .putExtra(EXTRA_URL, url)
-        .putExtra(EXTRA_TITLE, title);
+        .putExtra(EXTRA_TITLE, title)
+        .putExtra(EXTRA_ERROR_TEXT_COLOR, errorTextColor)
+        .putExtra(EXTRA_ERROR_BACKGROUND_COLOR, errorBackgroundColor);
   }
 
   @Override
@@ -76,7 +84,9 @@ public class WebViewActivity extends AppCompatActivity {
     final LinearLayout.LayoutParams wlp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
     container.addView(webView, wlp);
     webView.getSettings().setJavaScriptEnabled(true);
-    webView.setWebViewClient(new MWVWebViewClient(this, container));
+    final int errorTextColor = getIntent().getIntExtra(EXTRA_ERROR_TEXT_COLOR, Color.TRANSPARENT);
+    final int errorBackgroundColor = getIntent().getIntExtra(EXTRA_ERROR_BACKGROUND_COLOR, Color.TRANSPARENT);
+    webView.setWebViewClient(new MWVWebViewClient(this, container, errorTextColor, errorBackgroundColor));
     webView.setWebChromeClient(new WebChromeClient() {
       @Override
       public void onProgressChanged(WebView view, int newProgress) {
@@ -127,10 +137,16 @@ public class WebViewActivity extends AppCompatActivity {
   private static class MWVWebViewClient extends WebViewClient {
     private final Context context;
     private final ViewGroup containerView;
+    @ColorInt
+    private final int errorTextColor;
+    @ColorInt
+    private final int errorBackgroundColor;
 
-    MWVWebViewClient(Context context, ViewGroup containerView) {
+    MWVWebViewClient(Context context, ViewGroup containerView, int errorTextColor, int errorBackgroundColor) {
       this.context = context;
       this.containerView = containerView;
+      this.errorTextColor = errorTextColor;
+      this.errorBackgroundColor = errorBackgroundColor;
     }
 
     @Override
@@ -157,13 +173,22 @@ public class WebViewActivity extends AppCompatActivity {
     private void handleError(final WebView webView) {
       final int messageId = ResourceUtils.getStringResourceIdentifier(context, "modalwebview_error");
       final int actionId = ResourceUtils.getStringResourceIdentifier(context, "modalwebview_action_reload");
-      Snackbar.make(containerView, messageId, Snackbar.LENGTH_LONG)
+      Snackbar snackbar = Snackbar.make(containerView, messageId, Snackbar.LENGTH_LONG)
           .setAction(actionId, new View.OnClickListener() {
             @Override
             public void onClick(View view) {
               webView.reload();
             }
-          }).show();
+          });
+      View snackbarView = snackbar.getView();
+      if (this.errorTextColor != Color.TRANSPARENT) {
+        TextView textView = (TextView) snackbarView.findViewById(android.support.design.R.id.snackbar_text);
+        textView.setTextColor(this.errorTextColor);
+      }
+      if (this.errorBackgroundColor != Color.TRANSPARENT) {
+        snackbarView.setBackgroundColor(this.errorBackgroundColor);
+      }
+      snackbar.show();
     }
 
     private static boolean isForMainFrame(WebResourceRequest request) {

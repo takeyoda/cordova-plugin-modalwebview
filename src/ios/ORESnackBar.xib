@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="13196" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13173"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <customFonts key="customFonts">
+        <array key="HelveticaNeue.ttc">
+            <string>HelveticaNeue</string>
+            <string>HelveticaNeue-Bold</string>
+        </array>
+    </customFonts>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view contentMode="scaleToFill" id="iN0-l3-epB" customClass="ORESnackBar">
+            <rect key="frame" x="0.0" y="0.0" width="384" height="72"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Mlp-qE-U49">
+                    <rect key="frame" x="10" y="26.5" width="305" height="20"/>
+                    <fontDescription key="fontDescription" name="HelveticaNeue-Bold" family="Helvetica Neue" pointSize="16"/>
+                    <nil key="textColor"/>
+                    <nil key="highlightedColor"/>
+                </label>
+                <button opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="1000" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="C2i-N8-SuG">
+                    <rect key="frame" x="325" y="21" width="49" height="31"/>
+                    <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="16"/>
+                    <state key="normal" title="Button"/>
+                </button>
+            </subviews>
+            <color key="backgroundColor" red="1" green="0.99574157538369734" blue="0.84382649453160419" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <constraints>
+                <constraint firstItem="C2i-N8-SuG" firstAttribute="leading" secondItem="Mlp-qE-U49" secondAttribute="trailing" constant="10" id="Dhs-ml-goy"/>
+                <constraint firstItem="C2i-N8-SuG" firstAttribute="centerY" secondItem="iN0-l3-epB" secondAttribute="centerY" id="MWE-WE-Eb9"/>
+                <constraint firstItem="Mlp-qE-U49" firstAttribute="leading" secondItem="vUN-kp-3ea" secondAttribute="leading" constant="10" id="RfF-Qt-kY8"/>
+                <constraint firstItem="vUN-kp-3ea" firstAttribute="trailing" secondItem="C2i-N8-SuG" secondAttribute="trailing" constant="10" id="Xq3-W1-9Vs"/>
+                <constraint firstItem="Mlp-qE-U49" firstAttribute="centerY" secondItem="iN0-l3-epB" secondAttribute="centerY" id="jwg-k6-h9T"/>
+            </constraints>
+            <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+            <viewLayoutGuide key="safeArea" id="vUN-kp-3ea"/>
+            <connections>
+                <outlet property="actionButton" destination="C2i-N8-SuG" id="11c-zp-lDn"/>
+                <outlet property="messageLabel" destination="Mlp-qE-U49" id="i0I-7Y-ZWy"/>
+            </connections>
+            <point key="canvasLocation" x="54" y="-128"/>
+        </view>
+    </objects>
+</document>
