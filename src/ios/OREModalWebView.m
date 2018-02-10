@@ -12,6 +12,7 @@ alpha:(((c)>>24)&0xFF)/255.0]
 @property(nonatomic, copy) NSString *callbackId;
 @property(nonatomic, strong) UIColor *_errorTextColor;
 @property(nonatomic, strong) UIColor *_errorBackgroundColor;
+@property(nonatomic, assign) UIInterfaceOrientationMask _orientation;
 @end
 
 @implementation OREModalWebView
@@ -27,6 +28,7 @@ alpha:(((c)>>24)&0xFF)/255.0]
   rootController.title = title;
   rootController.errorTextColor = self._errorTextColor;
   rootController.errorBackgroundColor = self._errorBackgroundColor;
+  rootController.orientation = self._orientation;
   self.modalController = rootController;
   UINavigationController *naviController = [[UINavigationController alloc] initWithRootViewController:rootController];
   
@@ -54,8 +56,30 @@ alpha:(((c)>>24)&0xFF)/255.0]
   NSNumber *colorRGB = [[command arguments] objectAtIndex:0];
   self._errorBackgroundColor = ARGB(0xFF000000 | [colorRGB integerValue]);
 }
+- (void)setOrientation:(CDVInvokedUrlCommand *)command {
+  NSString *orientation = [[command arguments] objectAtIndex:0];
+  if ([orientation isEqualToString:@"portrait"]) {
+    self._orientation = UIInterfaceOrientationMaskPortrait;
+  } else if ([orientation isEqualToString:@"landscape"]) {
+    self._orientation = UIInterfaceOrientationMaskLandscape;
+  } else {
+    self._orientation = UIInterfaceOrientationMaskAll;
+  }
+}
 - (void)onReset {
   [super onReset];
   self.callbackId = nil;
+}
+@end
+
+@interface UINavigationController (Orientation)
+@end
+
+@implementation UINavigationController (Orientation)
+- (BOOL)shouldAutorotate {
+  return self.visibleViewController.shouldAutorotate;
+}
+- (UIInterfaceOrientationMask)supportedInterfaceOrientations {
+  return self.visibleViewController.supportedInterfaceOrientations;
 }
 @end

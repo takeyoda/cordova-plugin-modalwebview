@@ -20,6 +20,7 @@ var modal = new ModalWebView(function () {
 });
 modal.setErrorTextColor(0xFFFFFF);
 modal.setErrorBackgroundColor(0xEE0044);
+modal.setOrientation('portrait');
 var button = document.getElementById('some_element');
 button.addEventListener('click', function() {
   modal.open('https://www.example.com/', 'WebView title');

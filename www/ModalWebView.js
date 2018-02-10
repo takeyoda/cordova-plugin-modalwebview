@@ -31,6 +31,11 @@ ModalWebView.prototype = {
     var successCallback = function () {};
     var errorCallback = function (msg) {};
     exec(successCallback, errorCallback, 'ModalWebView', 'setErrorBackgroundColor', [color]);
+  },
+  setOrientation: function (orientation) {
+    var successCallback = function () {};
+    var errorCallback = function (msg) {};
+    exec(successCallback, errorCallback, 'ModalWebView', 'setOrientation', [orientation]);
   }
 };
 

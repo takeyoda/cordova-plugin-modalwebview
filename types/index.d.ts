@@ -3,6 +3,7 @@ declare namespace CordovaPluginModalWebView {
     open(url: string, title: string): void;
     setErrorTextColor(color: number): void; // color: 0xRRGGBB
     setErrorBackgroundColor(color: number): void;
+    setOrientation(orientation: string): void; // "portrait", "landscape", "default"
   }
   interface ModalWebViewStatic {
     new (closeCallback?: () => void): ModalWebView;
