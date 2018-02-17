@@ -4,6 +4,7 @@ import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.graphics.Color;
 import android.graphics.drawable.ClipDrawable;
 import android.graphics.drawable.ShapeDrawable;
@@ -39,14 +40,16 @@ public class WebViewActivity extends Activity {
   private static final String EXTRA_TITLE = WebViewActivity.class.getName() + "#TITLE";
   private static final String EXTRA_ERROR_TEXT_COLOR = WebViewActivity.class.getName() + "#ERROR_TEXT_COLOR";
   private static final String EXTRA_ERROR_BACKGROUND_COLOR = WebViewActivity.class.getName() + "#ERROR_BACKGROUND_COLOR";
+  private static final String EXTRA_ORIENTATION = WebViewActivity.class.getName() + "#ORIENTATION";
 
   public static Intent newCallingIntent(Context context, String url, String title,
-                                        int errorTextColor, int errorBackgroundColor) {
+                                        int errorTextColor, int errorBackgroundColor, int orientation) {
     return new Intent(context, WebViewActivity.class)
         .putExtra(EXTRA_URL, url)
         .putExtra(EXTRA_TITLE, title)
         .putExtra(EXTRA_ERROR_TEXT_COLOR, errorTextColor)
-        .putExtra(EXTRA_ERROR_BACKGROUND_COLOR, errorBackgroundColor);
+        .putExtra(EXTRA_ERROR_BACKGROUND_COLOR, errorBackgroundColor)
+        .putExtra(EXTRA_ORIENTATION, orientation);
   }
 
   @Override
@@ -99,6 +102,8 @@ public class WebViewActivity extends Activity {
         }
       }
     });
+
+    setRequestedOrientation(getIntent().getIntExtra(EXTRA_ORIENTATION, ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED));
 
     final FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT);
     setContentView(container, params);

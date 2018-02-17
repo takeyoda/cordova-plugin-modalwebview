@@ -16,6 +16,9 @@
   if (!self.errorBackgroundColor) {
     self.errorBackgroundColor = [UIColor whiteColor];
   }
+  if (!self.orientation) {
+    self.orientation = UIInterfaceOrientationMaskAll;
+  }
   UIBarButtonItem *closeButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemStop target:self action:@selector(_handleClose:)];
   self.navigationItem.leftBarButtonItem = closeButton;
   WKWebView *webView = [[WKWebView alloc] initWithFrame:self.view.bounds];
@@ -75,5 +78,13 @@
     [self.webView reload];
   };
   [bar showInView:self.view duration:ORESnackBarDurationLong];
+}
+
+- (BOOL)shouldAutorotate {
+  return YES;
+}
+
+- (UIInterfaceOrientationMask)supportedInterfaceOrientations {
+  return self.orientation;
 }
 @end
