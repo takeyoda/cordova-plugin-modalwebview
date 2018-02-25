@@ -2,7 +2,7 @@
 #import "OREWebViewController.h"
 #import "ORESnackBar.h"
 
-@interface OREModalWebViewController () <WKNavigationDelegate>
+@interface OREModalWebViewController () <WKNavigationDelegate, WKUIDelegate>
 @property (nonatomic, weak) WKWebView *webView;
 @property (nonatomic, weak) UIProgressView *progressView;
 @end
@@ -26,6 +26,7 @@
   // TODO delegate (navigation back/forward)
   self.webView = webView;
   self.webView.navigationDelegate = self;
+  self.webView.UIDelegate = self;
   [self.view addSubview:webView];
   // webView.topAnchor.constraintEqualToAnchor(self.view.topAnchor).active = true;
   // webView.bottomAnchor.constraintEqualToAnchor(self.view.bottomAnchor).active = true;
@@ -78,6 +79,18 @@
     [self.webView reload];
   };
   [bar showInView:self.view duration:ORESnackBarDurationLong];
+}
+
+- (nullable WKWebView *)webView:(WKWebView *)webView createWebViewWithConfiguration:(WKWebViewConfiguration *)configuration forNavigationAction:(WKNavigationAction *)navigationAction windowFeatures:(WKWindowFeatures *)windowFeatures {
+  if (!navigationAction.targetFrame) {
+    NSURL *url = navigationAction.request.URL;
+    if ([[UIApplication sharedApplication] canOpenURL:url]) {
+      [[UIApplication sharedApplication] openURL:url];
+    } else {
+      [webView loadRequest:navigationAction.request];
+    }
+  }
+  return nil;
 }
 
 - (BOOL)shouldAutorotate {

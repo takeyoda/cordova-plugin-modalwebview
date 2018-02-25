@@ -9,6 +9,7 @@ import android.graphics.Color;
 import android.graphics.drawable.ClipDrawable;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.RectShape;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -87,6 +88,7 @@ public class WebViewActivity extends Activity {
     final LinearLayout.LayoutParams wlp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
     container.addView(webView, wlp);
     webView.getSettings().setJavaScriptEnabled(true);
+    webView.getSettings().setSupportMultipleWindows(true);
     final int errorTextColor = getIntent().getIntExtra(EXTRA_ERROR_TEXT_COLOR, Color.TRANSPARENT);
     final int errorBackgroundColor = getIntent().getIntExtra(EXTRA_ERROR_BACKGROUND_COLOR, Color.TRANSPARENT);
     webView.setWebViewClient(new MWVWebViewClient(this, container, errorTextColor, errorBackgroundColor));
@@ -100,6 +102,17 @@ public class WebViewActivity extends Activity {
           anim.setStartDelay(180);
           anim.start();
         }
+      }
+      @Override
+      public boolean onCreateWindow(WebView view, boolean dialog, boolean userGesture, android.os.Message resultMsg) {
+        WebView.HitTestResult result = view.getHitTestResult();
+        String data = result.getExtra();
+        Context context = view.getContext();
+        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(data));
+        browserIntent.addCategory(Intent.CATEGORY_BROWSABLE);
+        browserIntent.addCategory(Intent.CATEGORY_DEFAULT);
+        context.startActivity(browserIntent);
+        return false;
       }
     });
 
