@@ -125,8 +125,8 @@ public class WebViewActivity extends Activity {
 
   @Override
   public boolean onCreateOptionsMenu(Menu menu) {
-    final MenuItem close = menu.add("Close");
-    final int iconClose = ResourceUtils.getDrawableResourceIdentifier(this, "ic_close_white_48dp");
+    final MenuItem close = menu.add("\u00d7");
+    final int iconClose = ResourceUtils.getDrawableResourceIdentifier(this, "ic_close_black_48dp");
     close.setIcon(iconClose)
         .setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
           @Override
