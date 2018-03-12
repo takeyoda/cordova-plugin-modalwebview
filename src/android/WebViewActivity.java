@@ -11,6 +11,9 @@ import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.RectShape;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.ColorInt;
+import android.support.design.widget.Snackbar;
+import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -30,12 +33,10 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.androidadvance.topsnackbar.TSnackbar;
-
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-public class WebViewActivity extends Activity {
+public class WebViewActivity extends AppCompatActivity {
 
   private static final String EXTRA_URL = WebViewActivity.class.getName() + "#URL";
   private static final String EXTRA_TITLE = WebViewActivity.class.getName() + "#TITLE";
@@ -44,7 +45,7 @@ public class WebViewActivity extends Activity {
   private static final String EXTRA_ORIENTATION = WebViewActivity.class.getName() + "#ORIENTATION";
 
   public static Intent newCallingIntent(Context context, String url, String title,
-                                        int errorTextColor, int errorBackgroundColor, int orientation) {
+                                        @ColorInt int errorTextColor, @ColorInt int errorBackgroundColor, int orientation) {
     return new Intent(context, WebViewActivity.class)
         .putExtra(EXTRA_URL, url)
         .putExtra(EXTRA_TITLE, title)
@@ -155,7 +156,9 @@ public class WebViewActivity extends Activity {
   private static class MWVWebViewClient extends WebViewClient {
     private final Context context;
     private final ViewGroup containerView;
+    @ColorInt
     private final int errorTextColor;
+    @ColorInt
     private final int errorBackgroundColor;
 
     MWVWebViewClient(Context context, ViewGroup containerView, int errorTextColor, int errorBackgroundColor) {
@@ -189,7 +192,7 @@ public class WebViewActivity extends Activity {
     private void handleError(final WebView webView) {
       final int messageId = ResourceUtils.getStringResourceIdentifier(context, "modalwebview_error");
       final int actionId = ResourceUtils.getStringResourceIdentifier(context, "modalwebview_action_reload");
-      TSnackbar snackbar = TSnackbar.make(containerView, messageId, TSnackbar.LENGTH_LONG)
+      Snackbar snackbar = Snackbar.make(containerView, messageId, Snackbar.LENGTH_LONG)
           .setAction(actionId, new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -198,7 +201,7 @@ public class WebViewActivity extends Activity {
           });
       View snackbarView = snackbar.getView();
       if (this.errorTextColor != Color.TRANSPARENT) {
-        TextView textView = (TextView) snackbarView.findViewById(com.androidadvance.topsnackbar.R.id.snackbar_text);
+        TextView textView = (TextView) snackbarView.findViewById(android.support.design.R.id.snackbar_text);
         textView.setTextColor(this.errorTextColor);
       }
       if (this.errorBackgroundColor != Color.TRANSPARENT) {

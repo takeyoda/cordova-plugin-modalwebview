@@ -30,17 +30,17 @@
         <config-file target="AndroidManifest.xml" parent="/manifest/application">
             <activity android:name="ore.cordova.modalwebview.WebViewActivity"
                       android:exported="false"
-                      android:theme="@android:style/Theme.DeviceDefault.Light"
+                      android:theme="@style/Theme.AppCompat.Light"
                       android:windowContentOverlay="@null" />
         </config-file>
         <source-file src="src/android/ModalWebView.java" target-dir="src/ore/cordova/modalwebview" />
         <source-file src="src/android/ResourceUtils.java" target-dir="src/ore/cordova/modalwebview" />
         <source-file src="src/android/WebViewActivity.java" target-dir="src/ore/cordova/modalwebview" />
-        <source-file src="src/android/xml/bottom_to_top.xml" target-dir="res/anim" />
-        <source-file src="src/android/xml/top_to_bottom.xml" target-dir="res/anim" />
-        <source-file src="src/android/xml/modalwebview.xml" target-dir="res/values" />
-        <source-file src="src/android/img/ic_close_black_48dp.png" target-dir="res/drawable-port-hdpi" />
-        <framework src="com.androidadvance:topsnackbar:1.1.1" />
+        <resource-file src="src/android/xml/bottom_to_top.xml" target="res/anim/bottom_to_top.xml" />
+        <resource-file src="src/android/xml/top_to_bottom.xml" target="res/anim/top_to_bottom.xml" />
+        <resource-file src="src/android/xml/modalwebview.xml" target="res/values/modalwebview.xml" />
+        <resource-file src="src/android/img/ic_close_black_48dp.png" target="res/drawable-port-hdpi/ic_close_black_48dp.png" />
+        <framework src="com.android.support:design:27+" />
     </platform>
 
     <platform name="ios">
