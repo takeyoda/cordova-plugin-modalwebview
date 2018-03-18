@@ -2,7 +2,7 @@
 #import "OREWebViewController.h"
 #import "ORESnackBar.h"
 
-@interface OREModalWebViewController () <WKNavigationDelegate>
+@interface OREModalWebViewController () <WKNavigationDelegate, WKUIDelegate>
 @property (nonatomic, weak) WKWebView *webView;
 @property (nonatomic, weak) UIProgressView *progressView;
 @end
@@ -16,18 +16,21 @@
   if (!self.errorBackgroundColor) {
     self.errorBackgroundColor = [UIColor whiteColor];
   }
+  if (!self.orientation) {
+    self.orientation = UIInterfaceOrientationMaskAll;
+  }
   UIBarButtonItem *closeButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemStop target:self action:@selector(_handleClose:)];
   self.navigationItem.leftBarButtonItem = closeButton;
-  WKWebView *webView = [[WKWebView alloc] initWithFrame:self.view.bounds];
-  // webView.translatesAutoresizingMaskIntoConstraints = false;
+  WKWebView *webView = [[WKWebView alloc] initWithFrame:CGRectZero];
+  webView.translatesAutoresizingMaskIntoConstraints = false;
   // TODO delegate (navigation back/forward)
   self.webView = webView;
   self.webView.navigationDelegate = self;
+  self.webView.UIDelegate = self;
   [self.view addSubview:webView];
-  // webView.topAnchor.constraintEqualToAnchor(self.view.topAnchor).active = true;
-  // webView.bottomAnchor.constraintEqualToAnchor(self.view.bottomAnchor).active = true;
-  // webView.leftAnchor.constraintEqualToAnchor(self.view.leftAnchor).active = true;
-  // webView.rightAnchor.constraintEqualToAnchor(self.view.rightAnchor).active = true;
+  NSDictionary *views = NSDictionaryOfVariableBindings(webView);
+  [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-(0)-[webView]-(0)-|" options:0 metrics:0 views:views]];
+  [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-(0)-[webView]-(0)-|" options:0 metrics:0 views:views]];
  
   [self.webView addObserver:self forKeyPath:@"loading" options:NSKeyValueObservingOptionNew context:nil];
   [self.webView addObserver:self forKeyPath:@"estimatedProgress" options:NSKeyValueObservingOptionNew context:nil];
@@ -75,5 +78,25 @@
     [self.webView reload];
   };
   [bar showInView:self.view duration:ORESnackBarDurationLong];
+}
+
+- (nullable WKWebView *)webView:(WKWebView *)webView createWebViewWithConfiguration:(WKWebViewConfiguration *)configuration forNavigationAction:(WKNavigationAction *)navigationAction windowFeatures:(WKWindowFeatures *)windowFeatures {
+  if (!navigationAction.targetFrame) {
+    NSURL *url = navigationAction.request.URL;
+    if ([[UIApplication sharedApplication] canOpenURL:url]) {
+      [[UIApplication sharedApplication] openURL:url];
+    } else {
+      [webView loadRequest:navigationAction.request];
+    }
+  }
+  return nil;
+}
+
+- (BOOL)shouldAutorotate {
+  return YES;
+}
+
+- (UIInterfaceOrientationMask)supportedInterfaceOrientations {
+  return self.orientation;
 }
 @end

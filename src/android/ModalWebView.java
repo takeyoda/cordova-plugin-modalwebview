@@ -9,6 +9,7 @@ import org.json.JSONException;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.graphics.Color;
 import android.support.annotation.ColorInt;
 
@@ -25,6 +26,8 @@ public class ModalWebView extends CordovaPlugin {
 
   @ColorInt
   private int errorBackgroundColor;
+
+  private int orientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED;
 
   @Override
   public boolean execute(final String action, final JSONArray args, final CallbackContext callbackContext) throws JSONException {
@@ -49,6 +52,20 @@ public class ModalWebView extends CordovaPlugin {
     } else if (action.equals("setErrorBackgroundColor")) {
       this.errorBackgroundColor = toColorInt(args.getInt(0));
       callbackContext.success();
+    } else if (action.equals("setOrientation")) {
+      String orientation = args.getString(0);
+      switch (orientation) {
+        case "portrait":
+          this.orientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT;
+          break;
+        case "landscape":
+          this.orientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE;
+          break;
+        default:
+          this.orientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED;
+          break;
+      }
+      callbackContext.success();
     } else {
       LOG.e(LOG_TAG, "Invalid action : " + action);
       callbackContext.sendPluginResult(new PluginResult(PluginResult.Status.INVALID_ACTION));
@@ -59,7 +76,7 @@ public class ModalWebView extends CordovaPlugin {
 
   private void open(String url, String title) {
     Activity context = cordova.getActivity();
-    Intent intent = WebViewActivity.newCallingIntent(context, url, title, errorTextColor, errorBackgroundColor);
+    Intent intent = WebViewActivity.newCallingIntent(context, url, title, errorTextColor, errorBackgroundColor, orientation);
     cordova.startActivityForResult(this, intent, REQUEST_CODE_CLOSE);
     int enterAnimationId = ResourceUtils.getAnimationResourceIdentifier(context, "bottom_to_top");
     context.overridePendingTransition(enterAnimationId, android.R.anim.fade_out);
